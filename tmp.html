@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>酒店热力图</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+</head>
+<body>
+    <h2 style="text-align: center;">高档型酒店热力图</h2>
+    <div id="map" style="width: 100%; height: 600px;"></div>
+
+    <script>
+        const map = L.map('map').setView([39.9042, 116.4074], 10);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        fetch('hotel_coordinates.json')
+            .then(response => response.json())
+            .then(data => {
+                console.log('Loaded hotel data:', data);
+                const heatPoints = data.map(hotel => [hotel.lat, hotel.lng, 1]);
+                console.log('Generated heat points:', heatPoints);
+
+                L.heatLayer(heatPoints, { radius: 25, blur: 15, maxZoom: 12 }).addTo(map);
+
+                data.forEach(hotel => {
+                    L.marker([hotel.lat, hotel.lng])
+                        .bindPopup(`<b>${hotel.name}</b><br>城市: ${hotel.city}`)
+                        .addTo(map);
+                });
+            })
+            .catch(error => console.error('Error loading hotel data:', error));
+    </script>
+</body>
+</html>

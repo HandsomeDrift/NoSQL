@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>北京和天津高档型酒店热力图</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+</head>
+<body>
+    <h2 style="text-align: center;">北京和天津高档型酒店热力图</h2>
+    <div id="map" style="width: 100%; height: 600px;"></div>
+
+    <script>
+        // 初始化地图
+        const map = L.map('map').setView([39.9042, 116.4074], 10);
+
+        // 添加瓦片图层
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // 动态加载酒店数据
+        fetch('hotel_coordinates.json')
+            .then(response => response.json())
+            .then(data => {
+                // 提取热力点数据
+                const heatPoints = data.map(hotel => [hotel.lat, hotel.lng, 1]); // 第三个参数为权重
+
+                // 添加热力图层
+                L.heatLayer(heatPoints, {
+                    radius: 10,
+                    blur: 15,
+                    maxZoom: 12,
+                }).addTo(map);
+
+                // 为每个酒店添加标记
+                data.forEach(hotel => {
+                    L.marker([hotel.lat, hotel.lng])
+                        .bindPopup(`<b>${hotel.name}</b><br>城市: ${hotel.city}`)
+                        .addTo(map);
+                });
+            })
+            .catch(error => console.error('加载酒店数据时出错:', error));
+    </script>
+</body>
+</html>
