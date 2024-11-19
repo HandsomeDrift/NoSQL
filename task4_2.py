@@ -1,5 +1,10 @@
 import pymongo
 import matplotlib.pyplot as plt
+import seaborn as sns
+
+# 设置 Matplotlib 字体支持
+plt.rcParams['font.sans-serif'] = ['SimHei']  # 使用无衬线字体
+plt.rcParams['axes.unicode_minus'] = False   # 解决负号显示问题
 
 # MongoDB连接设置
 client = pymongo.MongoClient('mongodb://localhost:27017/')
@@ -40,9 +45,9 @@ def analyze_price_distribution_by_hotel_grade():
     # 绘制箱线图
     plt.figure(figsize=(10, 6))
     plt.boxplot(price_lists, labels=hotel_types, vert=True, patch_artist=True)
-    plt.title("不同酒店类型的房间价格分布")
-    plt.xlabel("酒店类型")
-    plt.ylabel("房间价格")
+    plt.title("不同酒店类型的房间价格分布", fontproperties="SimSun")
+    plt.xlabel("酒店类型", fontproperties="SimSun")
+    plt.ylabel("房间价格", fontproperties="SimSun")
     plt.xticks(rotation=45)
     plt.grid(True, linestyle="--", alpha=0.7)
     plt.show()
