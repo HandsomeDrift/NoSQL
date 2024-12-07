@@ -20,10 +20,12 @@ for index, row in hotel_info_df.iterrows():
         "hotel_id": row['hotel_id'],
         "hotel_score": row['hotel_score'],
         "hotel_image_id": row['hotel_image_id'],
-        "hotel_location_info": row['hotel_location_info'],
         "hotel_grade_text": row['hotel_grade_text'],
         "hotel_comment_desc": row['hotel_comment_desc'],
-        "hotel_city_name": row['hotel_city_name']
+        "hotel_location": {  # 嵌套文档
+            "info": row['hotel_location_info'],
+            "city_name": row['hotel_city_name']
+        }
     }
     hotel_info_collection.insert_one(hotel_data)
 
@@ -45,4 +47,3 @@ for index, row in hotel_room_df.iterrows():
     hotel_room_collection.insert_one(room_data)
 
 print("数据已成功导入MongoDB！")
-
